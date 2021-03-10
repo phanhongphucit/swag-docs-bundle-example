@@ -4,6 +4,8 @@ namespace Swag\BundleExample;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\Indexer\InheritanceIndexer;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
@@ -12,8 +14,8 @@ class BundleExample extends Plugin
 {
     public function activate(ActivateContext $activateContext): void
     {
-        $entityIndexerRegistry = $this->container->get(EntityIndexerRegistry::class);
-        $entityIndexerRegistry->sendIndexingMessage(['product.indexer']);
+        $indexMessageSender = $this->container->get(IndexerMessageSender::class);
+        $indexMessageSender->partial(new \DateTimeImmutable(), [InheritanceIndexer::getName()]);
     }
 
     public function uninstall(UninstallContext $context): void
